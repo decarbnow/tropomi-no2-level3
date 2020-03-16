@@ -1,0 +1,3 @@
+# ignore auth.txt, login/pw is available at https://s5phub.copernicus.eu
+base/auth.txt
+.Rproj.user

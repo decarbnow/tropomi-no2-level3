@@ -11,9 +11,9 @@ source("./base/init.r", chdir=TRUE)
 validities = c(50, 75)
 pixelSizes = c(0.1)
 
-t1 = "2019-01-12T00:00:00.000Z"
-t2 = "2019-04-01T00:00:00.000Z"
-#t2 = "NOW"
+t1 = "2020-03-01T00:00:00.000Z"
+#t2 = "2019-10-01T00:00:00.000Z"
+t2 = "NOW"
 removeFile = TRUE
 # ----------------------------------------------
 
@@ -69,6 +69,7 @@ for(i in 1:nrow(getList)){
     }
     
     if(!file.exists(rawFilePath)){
+        print("Downloading ...")
         tropomiUrl = paste0(u, "('", uuid, "')/$value")
         
         download.file(tropomiUrl,
@@ -77,7 +78,7 @@ for(i in 1:nrow(getList)){
                       method="wget",
                       extra=paste0("--user=", authUser, " --password=", authPassword))
         
-        print("Downloading completed. Next.")
+        print("Download complete.")
     }
     
     for(pixelSize in pixelSizes){

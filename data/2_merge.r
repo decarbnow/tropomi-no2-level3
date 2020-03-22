@@ -8,7 +8,7 @@ loadPackages(c("hdf5r", "raster"))
 validity = 50
 pixelSize = 0.1
 year = "2020"
-month = "03"
+month = "02"
 h5Path = file.path(folders$tmp, "data", "h5", pixelSize, validity)
 h5Files = list.files(h5Path, full.names = FALSE)
 
@@ -22,14 +22,12 @@ for(i in 1:length(h5Files)){
     tmp = f[["tropospheric_NO2_column_number_density"]][,,1]
     
     f$close_all()
-    
-    s = seq(-180, 180, l = nrow(tmp)+1)
-    s = s[-c(nrow(tmp)+1)]
+
+    s = seq(-180+pixelSize/2, 180-pixelSize/2, l = nrow(tmp))
     length(s)
     rownames(tmp) = s
     
-    s = seq(-90, 90, l = ncol(tmp)+1)
-    s = s[-c(ncol(tmp)+1)]
+    s = seq(-90+pixelSize/2, 90-pixelSize/2, l = ncol(tmp))
     length(s)
     colnames(tmp) = s
     

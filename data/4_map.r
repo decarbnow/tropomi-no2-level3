@@ -18,9 +18,9 @@ loadPackages(c("raster",
 # SETUP
 # ----------------------------------------------
 #path = "/home/archie/WIFO_cumulus/sentinel"
-year = "2020"
-month = "03"
-
+year = "2019"
+month = "10"
+qnt = 0.95
 quantile_selection = c(0, 0.4, 0.6, 0.8, 0.85, 0.92, 0.95, 0.97, 0.99, 0.995)
 #quantile_selection = c(0, 0.4, 0.8, 0.95, 0.97)
 crumps = c(10000, 5000, 4000, 3000, 2000, 1800, 1600, 200, 200, 200)
@@ -38,7 +38,7 @@ files = list.files(path)
 
 meanData = loadData(file.path(path, paste0(month, "_", year, ".rData")))
 
-meanData = meanData[mValue >= quantile(meanData$mValue, 0.90)]
+meanData = meanData[mValue >= quantile(meanData$mValue, qnt)]
 meanData[, q := rank(mValue)/nrow(meanData)]
 
 l = length(quantile_selection) 
@@ -75,7 +75,7 @@ for (i in 1:l) {
   tt = smooth(tt, method = "ksmooth", smoothness=border_smooth)
   print("Simplify")
   ttd = data.frame(tt)
-  tt = gSimplify(tt, tol = simplify_tol, topologyPreserve=TRUE)
+  #tt = gSimplify(tt, tol = simplify_tol, topologyPreserve=TRUE)
   tt = SpatialPolygonsDataFrame(tt, ttd)
   polys[i] = tt
 } 
@@ -88,7 +88,7 @@ for (i in 1:l) {
 final_poly = do.call( rbind, polys )
 
 writeOGR(final_poly, file.path(folders$tmp, paste0("World_", year, "_", month, ".geojson")), layer="dfr_pg", driver="GeoJSON", overwrite_layer = TRUE)
-stop("EOF. Run code below to plot data on leaflet map.")
+#stop("EOF. Run code below to plot data on leaflet map.")
 # ----------------------------------------------
 
 # ----------------------------------------------
@@ -98,9 +98,10 @@ poly_colors = c("brown", "purple", "red", "green", "blue", "yellow", "black", "g
 
 leaflet_map = leaflet() %>% addProviderTiles("CartoDB.Positron")
 
-for(i in 1:length(polys)){
+for(i in 1:length(rasters)){
     leaflet_map = leaflet_map %>%
-        addPolygons(data = polys[[i]], color = poly_colors[i])
+      #addRasterImage(rasters[[i]], colors = poly_colors[i], opacity = 0.8)
+      addPolygons(data = polys[[i]], color = poly_colors[i])
 }
 
 leaflet_map
